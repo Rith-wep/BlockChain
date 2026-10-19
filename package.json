@@ -1,0 +1,15 @@
+{
+  "name": "blockchain-learning",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Local Solidity and Hardhat practice workspace",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox-viem": "^5.0.0",
+    "hardhat": "^3.0.0"
+  }
+}
