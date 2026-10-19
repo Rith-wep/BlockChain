@@ -19,7 +19,7 @@ contract QuestionRegistry {
     event QuestionCreated(uint256 indexed questionId, address indexed creator, string text);
     event QuestionResolved(uint256 indexed questionId, bool outcome);
 
-    // add a new question and return its id.
+    // add a new question and return its id
     function createQuestion(string calldata text) external returns (uint256 questionId) {
         if (bytes(text).length == 0) revert EmptyQuestion();
 
