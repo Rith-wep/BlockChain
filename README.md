@@ -4,6 +4,8 @@ This is a local-only Hardhat 3 project for learning Solidity before introducing
 the Gnosis Conditional Token Framework. The example contract is intentionally
 small and is not production prediction-market code.
 
+The lesson notes are organized in [`docs/`](./docs/README.md).
+
 ## Requirements
 
 - Node.js 22.13.0 or newer
