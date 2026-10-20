@@ -1,16 +1,16 @@
-# condition, collection, and position ids
+# how I learned condition, collection, and position ids
 
 ## warning
 
-`EducationalCTIdHelpers` is a learning tool. It is not the audited Gnosis
-`CTHelpers` library and must not replace the official library in production.
+I created `EducationalCTIdHelpers` as a learning tool. It is not the audited
+Gnosis `CTHelpers` library, and I must not use it as a production replacement.
 
-The official source uses Solidity `^0.5.1`. This project uses Solidity `0.8.34`.
-The exercise keeps the official input types, packed encoding, hashing, curve
+The official source uses Solidity `^0.5.1`. My practice code uses Solidity
+`0.8.34`. My exercise keeps the official input types, packed encoding, hashing, curve
 field, and root-collection algorithm, but updates the square-root calculation
 to use the EVM modular-exponentiation precompile. It intentionally rejects
-nested parent collections because the official parent-point addition code has
-not been included in this first lesson.
+nested parent collections because I did not include the official parent-point
+addition code in this first lesson.
 
 ## why cthelper exists
 

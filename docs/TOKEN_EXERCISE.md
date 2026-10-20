@@ -1,14 +1,15 @@
-# erc-20 and erc-1155 practice
+# my erc-20 and erc-1155 practice
 
-This exercise runs only on Hardhat's local test network. It does not use real
-funds or deploy anything to a public network.
+I use this exercise to understand ERC-20 and ERC-1155. I run it only on
+Hardhat's local test network, so I do not use real funds or deploy anything to
+a public network.
 
 ## fungible tokens
 
 A fungible token has interchangeable units. If two people each own one PTK,
 their tokens have the same meaning and value, just like two equal coins.
 
-`PracticeToken.sol` inherits OpenZeppelin's `ERC20` implementation. Its
+I made `PracticeToken.sol` inherit OpenZeppelin's `ERC20` implementation. Its
 constructor creates a fixed supply of 1,000,000 PTK and gives all of it to the
 deployer. ERC-20 uses 18 decimals by default, so the contract stores the supply
 as `1_000_000 * 10 ** 18` small units.
@@ -21,7 +22,7 @@ accounts without changing the total supply.
 An ERC-1155 contract can manage several token types at one contract address.
 Every type has a numeric id and separate balances.
 
-`PracticePositions.sol` uses:
+In `PracticePositions.sol`, I use:
 
 - token id `0` for an illustrative YES position;
 - token id `1` for an illustrative NO position; and

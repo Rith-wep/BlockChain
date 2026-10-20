@@ -1,18 +1,18 @@
-# local adapter for the actual gnosis ctf
+# my local adapter for the actual gnosis ctf
 
 ## scope and safety
 
-`LocalCTFAdapter` is a learning adapter for root-level binary conditions. The
-tests deploy the actual Gnosis `ConditionalTokens` version 1.0.3 contract on
-Hardhat's temporary local network.
+I built `LocalCTFAdapter` to learn how a modern contract can interact with
+root-level binary conditions in the actual Gnosis `ConditionalTokens` version
+1.0.3 contract. My tests deploy everything on Hardhat's temporary local network.
 
-The adapter is not audited and is not ready for production or real funds. It
-does not deploy to a public network and contains no private keys.
+I know the adapter is not audited or ready for production and real funds. I do
+not deploy it to a public network or put private keys in the project.
 
 ## compiler compatibility
 
 The official CTF source declares Solidity `^0.5.1`, and its own Truffle setup
-pins Solidity `0.5.10`. The learning contracts use Solidity `0.8.34`.
+pins Solidity `0.5.10`. My learning contracts use Solidity `0.8.34`.
 
 Hardhat is configured with two compilers:
 
@@ -76,6 +76,8 @@ Before moving assets, `_requireBinaryCondition` verifies that CTF has a prepared
 condition with exactly two outcomes.
 
 ## who owns and approves each asset?
+
+In these notes, “the user” means me or any account using my adapter.
 
 There are three important addresses:
 

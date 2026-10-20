@@ -1,11 +1,11 @@
-# question reader review
+# my question reader review
 
-This file explains the current `QuestionReader.sol` contract and its tests in
-simple English. The existing Solidity and test files were not changed.
+I wrote this review to explain my `QuestionReader.sol` contract and its tests in
+simple English. This helps me check that I understand the code I built.
 
 ## verified results
 
-These facts were checked directly from the current code and test run:
+I checked these facts directly from my code and test run:
 
 - `QuestionReader` uses the real read functions from `QuestionRegistry`:
   `questionCount()` and `getQuestion(uint256)`.
@@ -29,7 +29,7 @@ provides. It tells Solidity:
 The interface does not contain the function code. The real function code stays
 inside the other contract.
 
-Your interface is named `IQuestionRegistry`:
+My interface is named `IQuestionRegistry`:
 
 ```solidity
 interface IQuestionRegistry {

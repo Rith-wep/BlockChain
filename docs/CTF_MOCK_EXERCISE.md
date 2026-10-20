@@ -1,17 +1,17 @@
-# educational ctf lifecycle mock
+# my educational ctf lifecycle mock
 
 ## important warning
 
-`EducationalCTFMock` is not the real Gnosis Conditional Token Framework. It is
-a small local exercise that teaches the basic balance changes behind splitting,
-merging, resolution, and redemption.
+I created `EducationalCTFMock` only to learn the basic balance changes behind
+splitting, merging, resolution, and redemption. It is not the real Gnosis
+Conditional Token Framework.
 
 The official Gnosis `ConditionalTokens.sol` uses Solidity `^0.5.1` and an older
-OpenZeppelin package. This project uses Solidity `0.8.34` and OpenZeppelin
-`5.6.1`. Old source should not be copied into this project without a careful,
-reviewed migration because compiler rules and library APIs have changed.
+OpenZeppelin package. My modern practice code uses Solidity `0.8.34` and
+OpenZeppelin `5.6.1`. I should not copy old source into my project without a
+careful, reviewed migration because compiler rules and library APIs changed.
 
-The mock deliberately leaves out real CTF features such as condition hashes,
+I deliberately left out real CTF features such as condition hashes,
 collection IDs, index-set partitions, nested positions, ERC-1155 position-id
 derivation, multiple collateral tokens, and a production oracle system.
 

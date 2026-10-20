@@ -1,8 +1,8 @@
-# understanding question registry
+# how I understand question registry
 
-This lesson explains the code in `contracts/QuestionRegistry.sol` and
-`test/QuestionRegistry.ts`. The contract is a learning example. It is not yet a
-complete prediction market.
+These are my notes for `contracts/QuestionRegistry.sol` and
+`test/QuestionRegistry.ts`. I built this contract to learn the basics. I know it
+is not a complete prediction market.
 
 ## 1. what is a smart contract?
 
@@ -10,7 +10,7 @@ A smart contract is a program that runs on a blockchain. Its code and saved
 data are shared by the blockchain network. After a contract is deployed, users
 can call its functions by sending transactions.
 
-Your smart contract begins here:
+My smart contract begins here:
 
 ```solidity
 contract QuestionRegistry {
@@ -20,7 +20,7 @@ contract QuestionRegistry {
 contract's data, functions, errors, and events. `QuestionRegistry` is the name
 of this contract.
 
-Your contract stores questions, remembers who created them, and lets their
+My contract stores questions, remembers who created them, and lets their
 creator save a true-or-false outcome.
 
 The first line is:
@@ -45,14 +45,14 @@ This tells the Solidity compiler which compiler versions may compile the file.
 - it does not allow Solidity `0.9.0` or newer because that could contain
   breaking changes.
 
-Your Hardhat configuration currently selects exactly Solidity `0.8.34`, so that
-is the version used when you run `npm.cmd run compile`.
+My Hardhat configuration currently selects exactly Solidity `0.8.34`, so that
+is the version I use when I run `npm.cmd run compile`.
 
 ## 3. what is a struct?
 
 A `struct` is a custom data type that groups related values under one name.
 
-Your contract defines this struct:
+My contract defines this struct:
 
 ```solidity
 struct Question {
@@ -147,7 +147,7 @@ In short:
 
 `msg.sender` is the address that called the current function.
 
-When a question is created, your contract saves the caller:
+When a question is created, my contract saves the caller:
 
 ```solidity
 creator: msg.sender,
@@ -164,7 +164,7 @@ If the addresses are different, the operation stops.
 
 ### custom errors and `revert`
 
-Your contract defines three custom errors:
+My contract defines three custom errors:
 
 ```solidity
 error EmptyQuestion();
@@ -195,7 +195,7 @@ if (question.resolved) revert AlreadyResolved();
 ```
 
 Solidity also supports `require(condition, "message")`. It checks a condition
-and reverts with a text message when the condition is false. Your contract does
+and reverts with a text message when the condition is false. My contract does
 not use `require`. It uses custom errors instead. Custom errors are clear to
 test and usually use less gas than long error strings.
 
@@ -255,7 +255,7 @@ Events are records written to the blockchain transaction log. Applications,
 block explorers, and test code can watch these logs. Events make important
 contract actions easier to find without repeatedly reading all contract state.
 
-Your contract declares two events:
+My contract declares two events:
 
 ```solidity
 event QuestionCreated(uint256 indexed questionId, address indexed creator, string text);
@@ -278,7 +278,7 @@ emit QuestionResolved(questionId, outcome);
 an application could search for events from one creator or one question id.
 
 An event is useful for history and notifications, but it is not a replacement
-for contract storage. Your contract stores its current state in `questions` and
+for contract storage. My contract stores its current state in `questions` and
 uses events to announce changes.
 
 ## 7. how the five tests verify the contract
@@ -446,7 +446,7 @@ The Gnosis Conditional Token Framework can later help represent conditional
 positions and payouts. It should be studied separately after the basic Solidity
 and Hardhat ideas in this contract are clear.
 
-## check your understanding
+## questions I use to check my understanding
 
 1. Why does the first question receive id `0`?
 2. What changes in permanent storage when `resolveQuestion` succeeds?
