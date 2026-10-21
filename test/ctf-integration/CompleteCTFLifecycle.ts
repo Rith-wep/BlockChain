@@ -13,9 +13,9 @@ describe("complete local lifecycle with official Gnosis CTF", async function () 
   const elevenTokens = 11n * oneToken;
   const userStartingCollateral = 50n * oneToken;
 
-  let ctf: Awaited<ReturnType<typeof viem.deployContract>>;
-  let collateral: Awaited<ReturnType<typeof viem.deployContract>>;
-  let adapter: Awaited<ReturnType<typeof viem.deployContract>>;
+  let ctf: Awaited<ReturnType<typeof viem.deployContract<"ConditionalTokens">>>;
+  let collateral: Awaited<ReturnType<typeof viem.deployContract<"MockCollateral">>>;
+  let adapter: Awaited<ReturnType<typeof viem.deployContract<"LocalCTFAdapter">>>;
   let conditionId: `0x${string}`;
   let yesPositionId: bigint;
   let noPositionId: bigint;
@@ -153,6 +153,23 @@ describe("complete local lifecycle with official Gnosis CTF", async function () 
       account: oracle.account,
     });
     assert.equal(await ctf.read.payoutDenominator([conditionId]), 1n);
+  });
+
+  // the official ctf rejects invalid payout vectors without resolving the condition.
+  it("rejects all-zero and wrong-length payout vectors", async function () {
+    await assert.rejects(
+      ctf.write.reportPayouts([questionId, [0n, 0n]], {
+        account: oracle.account,
+      }),
+    );
+    assert.equal(await ctf.read.payoutDenominator([conditionId]), 0n);
+
+    await assert.rejects(
+      ctf.write.reportPayouts([questionId, [1n]], {
+        account: oracle.account,
+      }),
+    );
+    assert.equal(await ctf.read.payoutDenominator([conditionId]), 0n);
   });
 
   // an unknown question has no prepared condition and cannot be split.

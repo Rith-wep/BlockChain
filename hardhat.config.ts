@@ -1,9 +1,19 @@
 import hardhatToolboxViemPlugin from "@nomicfoundation/hardhat-toolbox-viem";
-import { defineConfig } from "hardhat/config";
+import { configVariable, defineConfig } from "hardhat/config";
 
 // tell hardhat which tools and solidity compiler to use.
 export default defineConfig({
   plugins: [hardhatToolboxViemPlugin],
+  networks: {
+    // This project intentionally defines Sepolia only, not a Mainnet deploy target.
+    sepolia: {
+      type: "http",
+      chainType: "l1",
+      chainId: 11155111,
+      url: configVariable("SEPOLIA_RPC_URL"),
+      accounts: [configVariable("SEPOLIA_PRIVATE_KEY")],
+    },
+  },
   solidity: {
     compilers: [
       {
