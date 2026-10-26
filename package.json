@@ -7,6 +7,7 @@
   "scripts": {
     "compile": "hardhat compile",
     "test": "hardhat test",
+    "preflight:sepolia:ctf": "tsx scripts/preflight-sepolia-ctf.ts",
     "deploy:sepolia:ctf": "hardhat run scripts/deploy-sepolia-ctf.ts --network sepolia",
     "deploy:sepolia:collateral": "hardhat run scripts/deploy-sepolia-collateral.ts --network sepolia",
     "deploy:sepolia:adapter": "hardhat run scripts/deploy-sepolia-adapter.ts --network sepolia"

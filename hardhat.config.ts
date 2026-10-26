@@ -1,5 +1,8 @@
 import hardhatToolboxViemPlugin from "@nomicfoundation/hardhat-toolbox-viem";
 import { configVariable, defineConfig } from "hardhat/config";
+import { loadLocalEnv } from "./scripts/lib/load-local-env.js";
+
+loadLocalEnv();
 
 // tell hardhat which tools and solidity compiler to use.
 export default defineConfig({
