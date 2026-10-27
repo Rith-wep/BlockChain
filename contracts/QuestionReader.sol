@@ -6,6 +6,7 @@ interface IQuestionRegistry {
     struct Question {
         string text;
         address creator;
+        address resolver;
         bool resolved;
         bool outcome;
     }
