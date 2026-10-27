@@ -12,6 +12,7 @@ describe("complete local lifecycle with official Gnosis CTF", async function () 
   const tenTokens = 10n * oneToken;
   const elevenTokens = 11n * oneToken;
   const userStartingCollateral = 50n * oneToken;
+  const lifecycleQuestionId = `0x${"55".repeat(32)}` as `0x${string}`;
 
   let ctf: Awaited<ReturnType<typeof viem.deployContract<"ConditionalTokens">>>;
   let collateral: Awaited<ReturnType<typeof viem.deployContract<"MockCollateral">>>;
@@ -39,6 +40,102 @@ describe("complete local lifecycle with official Gnosis CTF", async function () 
     conditionId = ids[0];
     yesPositionId = ids[3];
     noPositionId = ids[4];
+  });
+
+  // exercise one complete 1 MOCK lifecycle on fresh local contract instances.
+  it("splits, resolves, and redeems one MOCK through the adapter", async function () {
+    const initialBalance = await collateral.read.balanceOf([user.account.address]);
+    const ids = await adapter.read.getBinaryPositionIds([
+      oracle.account.address,
+      lifecycleQuestionId,
+    ]);
+    const lifecycleConditionId = ids[0];
+    const yesId = ids[3];
+    const noId = ids[4];
+
+    // Arrange: prepare a unique binary condition and verify it is unresolved.
+    await ctf.write.prepareCondition([
+      oracle.account.address,
+      lifecycleQuestionId,
+      2n,
+    ]);
+    assert.equal(await ctf.read.getOutcomeSlotCount([lifecycleConditionId]), 2n);
+    assert.equal(await ctf.read.payoutDenominator([lifecycleConditionId]), 0n);
+    assert.equal(await ctf.read.payoutNumerators([lifecycleConditionId, 0n]), 0n);
+    assert.equal(await ctf.read.payoutNumerators([lifecycleConditionId, 1n]), 0n);
+
+    // Act: approve and split exactly one MOCK into one YES and one NO.
+    await collateral.write.approve([adapter.address, oneToken], {
+      account: user.account,
+    });
+    await adapter.write.splitBinary(
+      [oracle.account.address, lifecycleQuestionId, oneToken],
+      { account: user.account },
+    );
+
+    // Assert: one MOCK was escrowed and the user received both positions.
+    assert.equal(
+      await collateral.read.balanceOf([user.account.address]),
+      initialBalance - oneToken,
+    );
+    assert.equal(await ctf.read.balanceOf([user.account.address, yesId]), oneToken);
+    assert.equal(await ctf.read.balanceOf([user.account.address, noId]), oneToken);
+
+    // Only the condition's oracle resolves it with YES winning.
+    await ctf.write.reportPayouts([lifecycleQuestionId, [1n, 0n]], {
+      account: oracle.account,
+    });
+    assert.equal(await ctf.read.payoutDenominator([lifecycleConditionId]), 1n);
+    assert.equal(await ctf.read.payoutNumerators([lifecycleConditionId, 0n]), 1n);
+    assert.equal(await ctf.read.payoutNumerators([lifecycleConditionId, 1n]), 0n);
+
+    // The adapter pulls ERC-1155 positions, so explicitly authorize it.
+    await ctf.write.setApprovalForAll([adapter.address, true], {
+      account: user.account,
+    });
+    await adapter.write.redeemBinary(
+      [oracle.account.address, lifecycleQuestionId],
+      { account: user.account },
+    );
+
+    // The winning YES pays exactly one MOCK; the losing NO pays zero.
+    assert.equal(await ctf.read.balanceOf([user.account.address, yesId]), 0n);
+    assert.equal(await ctf.read.balanceOf([user.account.address, noId]), 0n);
+    assert.equal(await collateral.read.balanceOf([user.account.address]), initialBalance);
+    assert.equal(await collateral.read.balanceOf([adapter.address]), 0n);
+    assert.equal(await ctf.read.payoutDenominator([lifecycleConditionId]), 1n);
+    assert.equal(await ctf.read.payoutNumerators([lifecycleConditionId, 0n]), 1n);
+    assert.equal(await ctf.read.payoutNumerators([lifecycleConditionId, 1n]), 0n);
+
+    // A second redemption has the adapter's documented no-positions error.
+    await viem.assertions.revertWithCustomError(
+      adapter.write.redeemBinary(
+        [oracle.account.address, lifecycleQuestionId],
+        { account: user.account },
+      ),
+      adapter,
+      "NoPositionsToRedeem",
+    );
+  });
+
+  it("rejects splitting when the adapter allowance is insufficient", async function () {
+    await collateral.write.approve([adapter.address, oneToken - 1n], {
+      account: user.account,
+    });
+
+    await assert.rejects(
+      adapter.write.splitBinary(
+        [oracle.account.address, questionId, oneToken],
+        { account: user.account },
+      ),
+    );
+
+    assert.equal(
+      await collateral.read.balanceOf([user.account.address]),
+      userStartingCollateral,
+    );
+    assert.equal(await ctf.read.balanceOf([user.account.address, yesPositionId]), 0n);
+    assert.equal(await ctf.read.balanceOf([user.account.address, noPositionId]), 0n);
   });
 
   // prove preparation, collateral ownership, approval, split, and final custody.
@@ -141,10 +238,11 @@ describe("complete local lifecycle with official Gnosis CTF", async function () 
 
   // official ctf derives the condition from msg.sender, so another account cannot resolve it.
   it("rejects payout reporting by an unauthorized oracle", async function () {
-    await assert.rejects(
+    await viem.assertions.revertWith(
       ctf.write.reportPayouts([questionId, [1n, 0n]], {
         account: user.account,
       }),
+      "condition not prepared or found",
     );
 
     assert.equal(await ctf.read.payoutDenominator([conditionId]), 0n);

@@ -160,6 +160,8 @@ export async function loadIntegrationArtifacts(): Promise<IntegrationArtifacts> 
     ["getPositionId", ["address", "bytes32"]],
     ["getOutcomeSlotCount", ["bytes32"]],
     ["payoutDenominator", ["bytes32"]],
+    ["payoutNumerators", ["bytes32", "uint256"]],
+    ["reportPayouts", ["bytes32", "uint256[]"]],
     ["balanceOf", ["address", "uint256"]],
     ["isApprovedForAll", ["address", "address"]],
     ["setApprovalForAll", ["address", "bool"]],
@@ -174,6 +176,7 @@ export async function loadIntegrationArtifacts(): Promise<IntegrationArtifacts> 
     ["getBinaryPositionIds", ["address", "bytes32"]],
     ["splitBinary", ["address", "bytes32", "uint256"]],
     ["mergeBinary", ["address", "bytes32", "uint256"]],
+    ["redeemBinary", ["address", "bytes32"]],
   ]);
   return loaded;
 }

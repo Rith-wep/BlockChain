@@ -15,6 +15,9 @@
     "split:sepolia:mock-collateral": "tsx scripts/split-sepolia-mock-collateral.ts",
     "merge:sepolia:mock-collateral": "tsx scripts/merge-sepolia-mock-collateral.ts",
     "approve:sepolia:ctf-operator": "tsx scripts/approve-sepolia-ctf-operator.ts",
+    "preflight:sepolia:resolution": "tsx scripts/preflight-sepolia-resolution.ts",
+    "report:sepolia:payout": "tsx scripts/report-sepolia-payouts.ts",
+    "redeem:sepolia:positions": "tsx scripts/redeem-sepolia-positions.ts",
     "deploy:sepolia:ctf": "hardhat run scripts/deploy-sepolia-ctf.ts --network sepolia",
     "deploy:sepolia:collateral": "hardhat run scripts/deploy-sepolia-collateral.ts --network sepolia",
     "deploy:sepolia:adapter": "hardhat run scripts/deploy-sepolia-adapter.ts --network sepolia"
