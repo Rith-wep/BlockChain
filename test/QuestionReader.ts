@@ -7,6 +7,10 @@ import { network } from "hardhat";
 describe("QuestionReader", async function () {
   const { viem } = await network.create();
   const [creator] = await viem.getWalletClients();
+  const readerErrors = [
+    { type: "error", name: "ZeroRegistryAddress", inputs: [] },
+    { type: "error", name: "RegistryAddressHasNoCode", inputs: [{ name: "registryAddress", type: "address" }] },
+  ] as const;
 
   let registry: Awaited<ReturnType<typeof viem.deployContract>>;
   let reader: Awaited<ReturnType<typeof viem.deployContract>>;
@@ -20,7 +24,8 @@ describe("QuestionReader", async function () {
   // make sure the reader returns data from the existing registry.
   it("reads an existing question", async function () {
     await registry.write.createQuestion(["Will the reader find this question?"]);
-    await registry.write.resolveQuestion([0n, true]);
+    await registry.write.assignResolver([0n, creator.account.address]);
+    await registry.write.resolveQuestion([0n, true], { account: creator.account });
 
     const question = await reader.read.readQuestion([0n]);
 
@@ -39,6 +44,23 @@ describe("QuestionReader", async function () {
       reader,
       "InvalidQuestionId",
       [1n, 1n],
+    );
+  });
+
+  it("rejects a zero registry address", async function () {
+    await viem.assertions.revertWithCustomError(
+      viem.deployContract("QuestionReader", ["0x0000000000000000000000000000000000000000"]),
+      { abi: readerErrors },
+      "ZeroRegistryAddress",
+    );
+  });
+
+  it("rejects a registry address with no contract code", async function () {
+    await viem.assertions.revertWithCustomErrorWithArgs(
+      viem.deployContract("QuestionReader", [creator.account.address]),
+      { abi: readerErrors },
+      "RegistryAddressHasNoCode",
+      [creator.account.address],
     );
   });
 });

@@ -30,6 +30,27 @@ describe("LocalCTFAdapter with the actual CTF contract", async function () {
     await ctf.write.prepareCondition([oracle.account.address, questionId, 2n]);
   });
 
+  it("blocks reentry into all operations from a receiver and resets for later calls", async function () {
+    const probe = await viem.deployContract("AdapterReentrancyProbe", [adapter.address]);
+    await collateral.write.transfer([probe.address, oneToken]);
+    const ids = await adapter.read.getBinaryPositionIds([oracle.account.address, questionId]);
+    for (let round = 1n; round <= 2n; round++) {
+      await probe.write.split([oracle.account.address, questionId, oneToken]);
+      assert.equal(await probe.read.blockedCalls(), round * 3n);
+      assert.equal(await ctf.read.balanceOf([probe.address, ids[3]]), oneToken);
+      assert.equal(await ctf.read.balanceOf([probe.address, ids[4]]), oneToken);
+      assert.equal(await collateral.read.allowance([adapter.address, ctf.address]), 0n);
+      await probe.write.merge([oneToken]);
+      assert.equal(await collateral.read.balanceOf([probe.address]), oneToken);
+      assert.equal(await ctf.read.balanceOf([probe.address, ids[3]]), 0n);
+      assert.equal(await ctf.read.balanceOf([probe.address, ids[4]]), 0n);
+      assert.equal(await ctf.read.balanceOf([adapter.address, ids[3]]), 0n);
+      assert.equal(await ctf.read.balanceOf([adapter.address, ids[4]]), 0n);
+      assert.equal(await collateral.read.balanceOf([adapter.address]), 0n);
+      assert.equal(await collateral.read.balanceOf([ctf.address]), 0n);
+    }
+  });
+
   // the constructor must not accept a missing ctf address.
   it("rejects a zero ctf address", async function () {
     await viem.assertions.revertWithCustomError(

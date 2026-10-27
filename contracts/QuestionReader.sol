@@ -18,11 +18,17 @@ interface IQuestionRegistry {
 // this practice contract reads questions from an existing question registry
 contract QuestionReader {
     error InvalidQuestionId(uint256 questionId, uint256 questionCount);
+    error ZeroRegistryAddress();
+    error RegistryAddressHasNoCode(address registryAddress);
 
     IQuestionRegistry public immutable registry;
 
     // remember which deployed registry this reader should use
     constructor(address registryAddress) {
+        if (registryAddress == address(0)) revert ZeroRegistryAddress();
+        if (registryAddress.code.length == 0) {
+            revert RegistryAddressHasNoCode(registryAddress);
+        }
         registry = IQuestionRegistry(registryAddress);
     }
 

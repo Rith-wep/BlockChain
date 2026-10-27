@@ -15,6 +15,12 @@ review what I learned:
 9. [`SEPOLIA_MOCK_COLLATERAL_SPLIT.md`](./SEPOLIA_MOCK_COLLATERAL_SPLIT.md) - how I check and, after a separate confirmation, split exactly 1 MOCK into YES and NO positions on Sepolia
 10. [`SEPOLIA_OPERATOR_APPROVAL_AND_MERGE.md`](./SEPOLIA_OPERATOR_APPROVAL_AND_MERGE.md) - how I separately review and, if I choose, approve the adapter and merge 1 MOCK worth of positions on Sepolia
 11. [`SEPOLIA_PAYOUT_AND_REDEMPTION.md`](./SEPOLIA_PAYOUT_AND_REDEMPTION.md) - how I inspect, report, and redeem the original Sepolia condition with separate safeguards
+12. [`SECURITY_REVIEW_STAGE_4.md`](./SECURITY_REVIEW_STAGE_4.md) - my learning-level review of access control, token handling, CTF callbacks, and remaining trust risks
+
+13. [`ORACLE_INTEGRATION_STAGE_5_ARCHITECTURE.md`](./ORACLE_INTEGRATION_STAGE_5_ARCHITECTURE.md) - my approved learning architecture and initial oracle research
+14. [`UMA_PROVIDER_VERIFICATION_STAGE_5.md`](./UMA_PROVIDER_VERIFICATION_STAGE_5.md) - verified Sepolia provider settings, bond funding, callback behavior, and implementation prerequisites
+
+15. [`UMA_CTF_BRIDGE_IMPLEMENTATION.md`](./UMA_CTF_BRIDGE_IMPLEMENTATION.md) - my local bridge functions, bonds, callback rules, 190-test result, and remaining review gates
 
 These are my local learning exercises. I do not treat the educational CTF files
 as audited or production implementations of Gnosis CTF.

@@ -253,6 +253,17 @@ describe("complete local lifecycle with official Gnosis CTF", async function () 
     assert.equal(await ctf.read.payoutDenominator([conditionId]), 1n);
   });
 
+  it("prevents even the authorized oracle from overwriting a resolved payout", async function () {
+    await ctf.write.reportPayouts([questionId, [1n, 0n]], { account: oracle.account });
+    await viem.assertions.revertWith(
+      ctf.write.reportPayouts([questionId, [0n, 1n]], { account: oracle.account }),
+      "payout denominator already set",
+    );
+    assert.equal(await ctf.read.payoutDenominator([conditionId]), 1n);
+    assert.equal(await ctf.read.payoutNumerators([conditionId, 0n]), 1n);
+    assert.equal(await ctf.read.payoutNumerators([conditionId, 1n]), 0n);
+  });
+
   // the official ctf rejects invalid payout vectors without resolving the condition.
   it("rejects all-zero and wrong-length payout vectors", async function () {
     await assert.rejects(
