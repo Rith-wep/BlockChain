@@ -162,6 +162,7 @@ export async function loadIntegrationArtifacts(): Promise<IntegrationArtifacts> 
     ["payoutDenominator", ["bytes32"]],
     ["balanceOf", ["address", "uint256"]],
     ["isApprovedForAll", ["address", "address"]],
+    ["setApprovalForAll", ["address", "bool"]],
   ]);
   requireFunctions(loaded.collateral.abi, "MockCollateral", [
     ["name", []], ["symbol", []], ["decimals", []], ["totalSupply", []],
@@ -171,6 +172,8 @@ export async function loadIntegrationArtifacts(): Promise<IntegrationArtifacts> 
     ["ctf", []], ["collateral", []],
     ["getBinaryConditionId", ["address", "bytes32"]],
     ["getBinaryPositionIds", ["address", "bytes32"]],
+    ["splitBinary", ["address", "bytes32", "uint256"]],
+    ["mergeBinary", ["address", "bytes32", "uint256"]],
   ]);
   return loaded;
 }

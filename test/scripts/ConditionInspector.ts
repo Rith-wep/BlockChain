@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { describe, it } from "node:test";
 import { keccak256, stringToHex, type Address, type Hex } from "viem";
 import {
@@ -10,7 +10,10 @@ import {
   createQuestionId,
   inspectBinaryCondition,
   interpretBinaryConditionStatus,
+  loadConditionRecord,
+  parseConditionInspectorCommand,
   saveConditionRecord,
+  updateConditionRecordStatus,
   type BinaryConditionRecord,
 } from "../../scripts/lib/condition-inspector.js";
 import { loadIntegrationArtifacts, type IntegrationReader } from "../../scripts/lib/sepolia-integration-preflight.js";
@@ -22,6 +25,24 @@ const oracle = CONDITION_INSPECTOR_ORACLE;
 const conditionId = `0x${"ab".repeat(32)}` as Hex;
 
 describe("binary condition inspector", () => {
+  it("requires an explicit inspect or create mode and reuses an exact question ID", () => {
+    assert.deepEqual(parseConditionInspectorCommand(["--question-id", questionId]), {
+      mode: "inspect-question-id",
+      questionId,
+    });
+    assert.deepEqual(parseConditionInspectorCommand(["--record", "test-records/saved.json"]), {
+      mode: "inspect-record",
+      recordPath: "test-records/saved.json",
+    });
+    assert.deepEqual(parseConditionInspectorCommand(["--create", questionDescription]), {
+      mode: "create",
+      description: questionDescription,
+    });
+    assert.throws(() => parseConditionInspectorCommand([]), /Choose one explicit mode/);
+    assert.throws(() => parseConditionInspectorCommand([questionDescription]), /Choose one explicit mode/);
+    assert.throws(() => parseConditionInspectorCommand(["--question-id", "not-a-question-id"]), /Choose one explicit mode/);
+  });
+
   it("derives a deterministic bytes32 ID from description, separator, and nonce", () => {
     assert.equal(
       createQuestionId(questionDescription, nonce),
@@ -103,5 +124,72 @@ describe("binary condition inspector", () => {
     assert.deepEqual(JSON.parse(await readFile(path, "utf8")), record);
     await assert.rejects(saveConditionRecord({ ...record, description: "different" }, directory), /already exists/);
     assert.deepEqual(JSON.parse(await readFile(path, "utf8")), record);
+  });
+
+  it("loads and validates the original saved identity without generating a new question ID", async () => {
+    const originalPath = resolve(
+      process.cwd(),
+      "test-records/ctf-conditions/73ab19f7f6dbc9776a16fb868152cc24c8a8bb377e5e8af87a96f29c54bf60be.json",
+    );
+    const record = await loadConditionRecord(originalPath);
+    assert.equal(record.description, "Will the described event occur by the stated deadline?");
+    assert.equal(record.nonce, "3f76b137-9388-45f2-beda-a303d4efedcf");
+    assert.equal(record.questionId, "0x73ab19f7f6dbc9776a16fb868152cc24c8a8bb377e5e8af87a96f29c54bf60be");
+    assert.equal(createQuestionId(record.description, record.nonce), record.questionId);
+    const command = parseConditionInspectorCommand(["--question-id", record.questionId]);
+    assert.equal(command.mode, "inspect-question-id");
+    if (command.mode === "inspect-question-id") assert.equal(command.questionId, record.questionId);
+  });
+
+  it("rejects missing or internally inconsistent saved records", async (t) => {
+    const directory = await mkdtemp(join(tmpdir(), "ctf-condition-invalid-record-"));
+    t.after(async () => rm(directory, { recursive: true, force: true }));
+    await assert.rejects(loadConditionRecord(join(directory, "missing.json")), /missing, unreadable/);
+
+    const badPath = join(directory, "bad.json");
+    await writeFile(badPath, JSON.stringify({
+      network: "sepolia",
+      chainId: 11155111,
+      ctfAddress: CONDITION_INSPECTOR_CTF,
+      oracle,
+      description: "altered description does not match its question ID",
+      nonce,
+      questionId,
+      conditionId,
+    }));
+    await assert.rejects(loadConditionRecord(badPath), /do not reproduce/);
+  });
+
+  it("updates only cached status after verified reads and preserves original identity", async (t) => {
+    const directory = await mkdtemp(join(tmpdir(), "ctf-condition-status-update-"));
+    t.after(async () => rm(directory, { recursive: true, force: true }));
+    const path = join(directory, "record.json");
+    const record: BinaryConditionRecord = {
+      network: "sepolia",
+      chainId: 11155111,
+      ctfAddress: CONDITION_INSPECTOR_CTF,
+      description: questionDescription,
+      nonce,
+      questionId,
+      oracle,
+      conditionId,
+      outcomeSlotCount: "0",
+      payoutDenominator: "0",
+      prepared: false,
+      resolved: false,
+    };
+    await writeFile(path, JSON.stringify(record));
+    const updated = await updateConditionRecordStatus(path, record, {
+      conditionId,
+      outcomeSlotCount: 2n,
+      payoutDenominator: 0n,
+      prepared: true,
+      resolved: false,
+    });
+    assert.deepEqual(JSON.parse(await readFile(path, "utf8")), updated);
+    assert.equal(updated.questionId, record.questionId);
+    assert.equal(updated.nonce, record.nonce);
+    assert.equal(updated.description, record.description);
+    assert.equal(updated.prepared, true);
   });
 });

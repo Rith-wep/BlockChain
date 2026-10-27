@@ -11,6 +11,10 @@
     "preflight:sepolia:integration": "tsx scripts/preflight-sepolia-integration.ts",
     "ctf:inspect-condition": "tsx scripts/inspect-sepolia-condition.ts",
     "ctf:prepare-condition": "tsx scripts/prepare-sepolia-condition.ts",
+    "approve:sepolia:mock-collateral": "tsx scripts/approve-sepolia-mock-collateral.ts",
+    "split:sepolia:mock-collateral": "tsx scripts/split-sepolia-mock-collateral.ts",
+    "merge:sepolia:mock-collateral": "tsx scripts/merge-sepolia-mock-collateral.ts",
+    "approve:sepolia:ctf-operator": "tsx scripts/approve-sepolia-ctf-operator.ts",
     "deploy:sepolia:ctf": "hardhat run scripts/deploy-sepolia-ctf.ts --network sepolia",
     "deploy:sepolia:collateral": "hardhat run scripts/deploy-sepolia-collateral.ts --network sepolia",
     "deploy:sepolia:adapter": "hardhat run scripts/deploy-sepolia-adapter.ts --network sepolia"

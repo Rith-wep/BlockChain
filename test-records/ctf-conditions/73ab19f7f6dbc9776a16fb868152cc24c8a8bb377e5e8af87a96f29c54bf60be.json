@@ -7,8 +7,8 @@
   "questionId": "0x73ab19f7f6dbc9776a16fb868152cc24c8a8bb377e5e8af87a96f29c54bf60be",
   "oracle": "0x8cfbcfc0e1c974970f03627e820ded0c95a7b6fa",
   "conditionId": "0xededc961c06f120960547f392e1623a6ba2d46a68badafc28ee81f99b45b4cec",
-  "outcomeSlotCount": "0",
+  "outcomeSlotCount": "2",
   "payoutDenominator": "0",
-  "prepared": false,
+  "prepared": true,
   "resolved": false
 }

@@ -11,6 +11,9 @@ review what I learned:
 6. [`CTF_ADAPTER_EXERCISE.md`](./CTF_ADAPTER_EXERCISE.md) — local adapter tested against the actual CTF contract
 
 7. [`LOCAL_CTF_ADAPTER_TESTING.md`](./LOCAL_CTF_ADAPTER_TESTING.md) - how I test the adapter lifecycle on Hardhat's local network
+8. [`SEPOLIA_MOCK_COLLATERAL_APPROVAL.md`](./SEPOLIA_MOCK_COLLATERAL_APPROVAL.md) - how I check and, after a separate confirmation, approve exactly 1 MOCK for my Sepolia adapter
+9. [`SEPOLIA_MOCK_COLLATERAL_SPLIT.md`](./SEPOLIA_MOCK_COLLATERAL_SPLIT.md) - how I check and, after a separate confirmation, split exactly 1 MOCK into YES and NO positions on Sepolia
+10. [`SEPOLIA_OPERATOR_APPROVAL_AND_MERGE.md`](./SEPOLIA_OPERATOR_APPROVAL_AND_MERGE.md) - how I separately review and, if I choose, approve the adapter and merge 1 MOCK worth of positions on Sepolia
 
 These are my local learning exercises. I do not treat the educational CTF files
 as audited or production implementations of Gnosis CTF.
