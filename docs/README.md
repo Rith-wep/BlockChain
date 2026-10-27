@@ -10,5 +10,7 @@ review what I learned:
 5. [`CTF_ID_EXERCISE.md`](./CTF_ID_EXERCISE.md) — condition, collection, and position identifiers
 6. [`CTF_ADAPTER_EXERCISE.md`](./CTF_ADAPTER_EXERCISE.md) — local adapter tested against the actual CTF contract
 
+7. [`LOCAL_CTF_ADAPTER_TESTING.md`](./LOCAL_CTF_ADAPTER_TESTING.md) - how I test the adapter lifecycle on Hardhat's local network
+
 These are my local learning exercises. I do not treat the educational CTF files
 as audited or production implementations of Gnosis CTF.

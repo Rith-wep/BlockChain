@@ -1,0 +1,14 @@
+{
+  "network": "sepolia",
+  "chainId": 11155111,
+  "ctfAddress": "0x0CF01081fa2843BD187AC1A52C5a32C02211ee36",
+  "description": "Will the described event occur by the stated deadline?",
+  "nonce": "23f2613b-e792-47cd-b363-7425197f9803",
+  "questionId": "0xcde531ebea04193b97806210d59e5e6bbd9598dbfa9031e876909505b7391988",
+  "oracle": "0x8cfbcfc0e1c974970f03627e820ded0c95a7b6fa",
+  "conditionId": "0x9d266a6f15280a3e2392ed8be2e54cb65bbc4e3151233b479ab312df45a7b8b9",
+  "outcomeSlotCount": "0",
+  "payoutDenominator": "0",
+  "prepared": false,
+  "resolved": false
+}
